@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: rota-yks-tracker
+    runtime: node
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npm run start
+    envVars:
+      - key: NEXTAUTH_SECRET
+        generateValue: true
+      - key: NEXTAUTH_URL
+        sync: false
+      - key: YOUTUBE_API_KEY
+        sync: false
+    disk:
+      name: yks-data
+      mountPath: /opt/render/project/src/data
+      sizeGB: 1

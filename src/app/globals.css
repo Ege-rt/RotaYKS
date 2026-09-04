@@ -1,0 +1,205 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --ink-950: 5 3 8;
+  --ink-900: 10 8 18;
+  --ink-800: 15 12 26;
+  --ink-700: 22 18 37;
+  --ink-600: 30 24 50;
+  --mist-100: 247 246 250;
+  --mist-300: 201 198 214;
+  --mist-500: 139 135 160;
+  --mist-700: 92 88 118;
+  --line-color: rgba(255, 255, 255, 0.08);
+  --hover-tint: rgba(255, 255, 255, 0.05);
+
+  /* Accent color palette — overridden per-choice below via [data-accent] */
+  --accent-200: 216 201 255;
+  --accent-text: 187 160 255; /* readable accent on dark bg */
+  --accent-400: 155 114 255;
+  --accent-500: 124 77 255;
+  --accent-600: 105 49 224;
+  --accent-700: 84 35 184;
+  --accent-800: 62 26 138;
+  --accent-900: 42 18 95;
+}
+
+html.light {
+  --ink-950: 246 245 250;
+  --ink-900: 255 255 255;
+  --ink-800: 255 255 255;
+  --ink-700: 240 238 247;
+  --ink-600: 231 228 242;
+  --mist-100: 24 20 38;
+  --mist-300: 75 70 98;
+  --mist-500: 128 123 152;
+  --mist-700: 172 168 194;
+  --line-color: rgba(30, 20, 60, 0.09);
+  --accent-text: 105 49 224; /* readable accent on light bg */
+  --hover-tint: rgba(20, 10, 45, 0.05);
+}
+
+/* Accent color choices — set via data-accent on <html>, persisted in settings.
+   Only --accent-text (used for on-background readable text) differs between
+   light/dark; the rest of the scale stays constant per accent. */
+html[data-accent="blue"] {
+  --accent-200: 199 219 255;
+  --accent-text: 147 184 255;
+  --accent-400: 91 141 255;
+  --accent-500: 59 110 255;
+  --accent-600: 36 81 214;
+  --accent-700: 28 63 168;
+  --accent-800: 21 47 125;
+  --accent-900: 14 32 88;
+}
+html.light[data-accent="blue"] {
+  --accent-text: 36 81 214;
+}
+
+html[data-accent="emerald"] {
+  --accent-200: 195 243 216;
+  --accent-text: 127 227 172;
+  --accent-400: 63 203 132;
+  --accent-500: 31 176 106;
+  --accent-600: 14 154 86;
+  --accent-700: 11 122 69;
+  --accent-800: 8 92 52;
+  --accent-900: 5 65 36;
+}
+html.light[data-accent="emerald"] {
+  --accent-text: 14 154 86;
+}
+
+html[data-accent="rose"] {
+  --accent-200: 255 211 222;
+  --accent-text: 255 159 180;
+  --accent-400: 255 110 143;
+  --accent-500: 255 69 113;
+  --accent-600: 214 40 94;
+  --accent-700: 168 30 76;
+  --accent-800: 125 23 57;
+  --accent-900: 88 16 42;
+}
+html.light[data-accent="rose"] {
+  --accent-text: 214 40 94;
+}
+
+html[data-accent="amber"] {
+  --accent-200: 255 227 176;
+  --accent-text: 255 198 112;
+  --accent-400: 255 170 61;
+  --accent-500: 255 144 18;
+  --accent-600: 181 114 10;
+  --accent-700: 143 91 8;
+  --accent-800: 107 68 6;
+  --accent-900: 74 47 4;
+}
+html.light[data-accent="amber"] {
+  --accent-text: 181 114 10;
+}
+
+.light .bg-aurora {
+  opacity: 0.4;
+}
+.light .bg-noise {
+  opacity: 0.5;
+}
+
+@layer base {
+  * {
+    @apply border-line;
+  }
+  html {
+    color-scheme: dark;
+  }
+  html.light {
+    color-scheme: light;
+  }
+  body {
+    @apply bg-ink-950 text-mist-100 font-body antialiased;
+    font-feature-settings: "cv11", "ss01";
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+  ::selection {
+    @apply bg-violet-500/30;
+  }
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgb(var(--accent-400) / 0.25);
+    border-radius: 999px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+  }
+  :focus-visible {
+    outline: 2px solid rgb(var(--accent-400));
+    outline-offset: 2px;
+  }
+}
+
+/* Literal text-white usages are meant for panel/heading text on the dark
+   background — in light mode that would be white-on-white, so repoint them
+   to the theme's primary text color. Buttons/badges that bake white text
+   directly into their own class via @apply (btn-primary, nav-link-active)
+   are untouched since they never carry a literal "text-white" class. */
+.light .text-white {
+  color: rgb(var(--mist-100));
+}
+/* .btn-primary's white text is intentional on its opaque violet gradient in
+   both themes — Tailwind's @apply propagates the override above onto it
+   too, so restore it explicitly here. */
+.light .btn-primary {
+  color: #fff;
+}
+
+@layer components {
+  .glass-panel {
+    @apply relative bg-ink-800/50 backdrop-blur-2xl border border-line rounded-[26px] shadow-card;
+  }
+  .glass-panel::before {
+    content: "";
+    @apply pointer-events-none absolute inset-x-0 top-0 h-px rounded-t-[26px] bg-gradient-to-r from-transparent via-white/25 to-transparent;
+  }
+  .glass-input {
+    @apply w-full bg-ink-900/80 border border-line rounded-2xl px-4 py-2.5 text-sm text-mist-100 placeholder:text-mist-700 outline-none transition-colors focus:border-violet-400/60 focus:ring-1 focus:ring-violet-400/30;
+  }
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-b from-violet-400 to-violet-600 px-5 py-2.5 text-sm font-medium text-white shadow-glow transition-all hover:brightness-110 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none;
+    transition: filter 0.15s, box-shadow 0.15s, transform 0.1s;
+  }
+  .btn-primary:hover {
+    box-shadow: 0 0 0 1px rgb(var(--accent-400) / 0.3), 0 10px 50px -10px rgb(var(--accent-500) / 0.55);
+  }
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 rounded-2xl border border-line bg-ink-800/60 px-5 py-2.5 text-sm font-medium text-mist-100 transition-all hover:bg-ink-700/60 hover:border-violet-400/30 active:scale-[0.98];
+  }
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-medium text-mist-500 transition-colors hover:text-mist-100 hover:bg-[var(--hover-tint)];
+  }
+  .label-eyebrow {
+    @apply text-[11px] font-semibold uppercase tracking-[0.18em] text-violet-300/80;
+  }
+  .stat-number {
+    @apply font-mono font-medium tracking-tight;
+  }
+  .nav-link {
+    @apply flex items-center gap-3 rounded-2xl px-3.5 py-2.5 text-sm text-mist-500 transition-colors hover:text-mist-100 hover:bg-[var(--hover-tint)];
+  }
+  .nav-link-active {
+    @apply text-white bg-gradient-to-r from-violet-500/20 to-transparent border border-violet-400/20;
+  }
+  .chip {
+    @apply inline-flex items-center gap-1 rounded-full border border-line bg-[var(--hover-tint)] px-2.5 py-1 text-[11px] font-medium text-mist-500;
+  }
+}
+
+.bg-noise {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+}
